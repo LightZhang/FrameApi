@@ -3,7 +3,7 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const uuid = require('node-uuid');
 const env = process.env.NODE_ENV || 'development';
-const config = require(path.resolve(__dirname, '../database/config.json'))[env];
+const config = require(path.resolve(__dirname, '../config/config.json'))[env];
  
 console.log('init sequelize...');
  

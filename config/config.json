@@ -1,11 +1,14 @@
 {
     "development": {
         "host": "192.168.147.131",
-        "redisPort": 6379
+        "redisPort": 6379,
+        "dialect": "mysql"
     },
     "production": {
         "host": "192.168.147.131",
-        "redisPort": 6379
+        "redisPort": 6379,
+        "dialect": "mysql"
+     
     },
     "expires": 86400
 }

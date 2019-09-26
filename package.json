@@ -8,6 +8,8 @@
     "koa": "^2.8.1",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
+    "mysql2": "^1.7.0",
+    "node-uuid": "^1.4.8",
     "sequelize": "^5.19.0"
   },
   "devDependencies": {},

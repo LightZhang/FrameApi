@@ -1,9 +1,3 @@
-/*********************************************
-//文件：common
-//作者：panshiliang
-//时间：2019/5/10
-//描述：处理公共方法
-**********************************************/
 'use strict';
 
 module.exports = {
@@ -27,5 +21,23 @@ module.exports = {
         }
       });
     });
+  },
+  mapFiles(folderName) {
+    const path = require('path');
+    const fs = require('fs');
+    const db = require('../middleware/db');
+    let exportFiles = {};
+    let modelUrl = folderName;
+    let files = fs.readdirSync(modelUrl);
+    let js_files = files.filter(f => {
+      return f.endsWith('.js');
+    }, files);
+
+    for (let f of js_files) {
+      let name = f.substring(0, f.length - 3);
+      exportFiles[name] = require(path.resolve(modelUrl, f));
+    }
+
+    return exportFiles;
   }
 };
