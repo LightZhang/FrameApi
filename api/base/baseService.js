@@ -1,4 +1,6 @@
 const path = require('path');
 const common = require('../../tool/common');
 let folderName = path.resolve(__dirname, '../service/');
-module.exports = common.mapFiles(folderName);
+let services = common.mapFiles(folderName);
+
+module.exports = services;
