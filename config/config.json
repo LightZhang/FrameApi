@@ -1,15 +1,12 @@
 {
     "development": {
-        "host": "192.168.147.131",
-        "redisPort": 6379,
-        "dialect": "mysql"
-    },
-    "production": {
-        "host": "192.168.147.131",
-        "redisPort": 6379,
-        "dialect": "mysql"
-     
-    },
-    "expires": 86400
-}
+      "username": "root",
+      "password": "zc123",
+      "database": "xbyjshop",
+      "host": "47.98.167.204",
+      "port": 3306,
+      "dialect": "mysql"
+    }
+   
+  }
   

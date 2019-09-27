@@ -1,12 +1,15 @@
 const { user } = require('../base/baseModel');
+debugger;
 module.exports = {
-  async findOne() {
-    const user = await user.findOne({
+  async findOne(ctx, next) {
+    let offset = ctx.request.query.offset || 0;
+    let limit = ctx.request.query.limit || 10;
+    const user2 = await user.findOne({
       offset,
       limit,
       order: [['createdAt', 'desc'], ['id', 'desc']]
     });
-    return user;
+    return user2;
   },
 
   async userList(ctx, next) {

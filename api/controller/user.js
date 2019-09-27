@@ -1,13 +1,18 @@
 const { user } = require('../base/baseService');
+debugger;
 module.exports = {
-  'POST api/users': async (ctx, next) => {
+  'GET /api/users': async (ctx, next) => {
+    console.log(2222);
+    debugger;
     let id = ctx.request.query.id;
     let where = {
       id: id
     };
-    const user = await user.findOne(where);
+    debugger;
+
+    const user2 = await user.findOne(where);
     ctx.json({
-      users: user
+      users: user2
     });
   }
 };
