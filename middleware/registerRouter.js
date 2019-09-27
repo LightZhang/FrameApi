@@ -24,9 +24,7 @@ function mapRouter(routerGloab, controller) {
     for (let url in controller) {
       if (url.startsWith('GET ')) {
         let path = url.substring(4);
-        let xx = controller[url];
-        console.log(xx);
-        routerGloab.get(path, xx);
+        routerGloab.get(path, controller[url]);
         logTable.push({ type: 'GET', url: path });
       } else if (url.startsWith('POST ')) {
         let path = url.substring(5);

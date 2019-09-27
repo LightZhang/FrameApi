@@ -38,7 +38,6 @@ module.exports = {
       exportFiles[name] = require(path.resolve(modelUrl, f));
     }
 
-    debugger;
     return exportFiles;
   }
 };
