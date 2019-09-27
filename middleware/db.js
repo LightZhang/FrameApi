@@ -76,7 +76,6 @@ var exp = {
   defineModel: defineModel,
   sync: () => {
     if (process.env.NODE_ENV !== 'production') {
-      debugger;
       sequelize.sync({ force: true });
     } else {
       throw new Error("Cannot sync() when NODE_ENV is set to 'production'.");

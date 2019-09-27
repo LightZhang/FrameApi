@@ -2,7 +2,6 @@ const { isTokenValid } = require('../tool/common');
 
 module.exports = function() {
   return async (ctx, next) => {
-    debugger;
     let pathPrefix = '/api';
     if (ctx.request.path.startsWith(pathPrefix)) {
       console.log(`Process API ${ctx.request.method} ${ctx.request.url}...`);
