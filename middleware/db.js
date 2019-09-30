@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 const uuid = require('node-uuid');
 const env = process.env.NODE_ENV || 'development';
 const config = require(path.resolve(__dirname, '../config/config.json'))[env];
-
+const TYPES = ['STRING', 'INTEGER', 'BIGINT', 'TEXT', 'DOUBLE', 'DATEONLY', 'BOOLEAN'];
 console.log('init sequelize...');
 
 function generateId() {
@@ -39,6 +39,13 @@ function defineModel(name, attributes) {
     type: Sequelize.STRING(50),
     primaryKey: true
   };
+  attrs.remark = {
+    type: Sequelize.STRING(50)
+  };
+
+  attrs.sort = {
+    type: Sequelize.INTEGER()
+  };
   attrs.createdDate = {
     type: Sequelize.BIGINT,
     allowNull: false
@@ -69,8 +76,6 @@ function defineModel(name, attributes) {
     }
   });
 }
-
-const TYPES = ['STRING', 'INTEGER', 'BIGINT', 'TEXT', 'DOUBLE', 'DATEONLY', 'BOOLEAN'];
 
 var exp = {
   defineModel: defineModel,
