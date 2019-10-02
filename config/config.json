@@ -1,12 +1,10 @@
 {
-    "development": {
-      "username": "root",
-      "password": "zc123",
-      "database": "node_test",
-      "host": "47.98.167.204",
-      "port": 3306,
-      "dialect": "mysql"
-    }
-   
+  "development": {
+    "username": "root",
+    "password": "zc123",
+    "database": "node_test",
+    "host": ,
+    "port": 3306,
+    "dialect": "mysql"
   }
-  
+}
