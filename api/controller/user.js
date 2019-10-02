@@ -1,6 +1,6 @@
-const { user } = require('../base/baseService');
+const { user } = require('../base/baseModel');
 module.exports = {
-  'GET /api/users': async (ctx, next) => {
+  'GET /users': async (ctx, next) => {
     let id = ctx.request.query.id;
     let where = {
       id: id
@@ -10,5 +10,6 @@ module.exports = {
     ctx.json({
       users: curUser
     });
+
   }
 };

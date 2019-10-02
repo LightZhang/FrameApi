@@ -23,7 +23,7 @@ function mapRouter(routerGloab, controller) {
     let logTable = [];
     for (let url in controller) {
       if (url.startsWith('GET ')) {
-        let path = url.substring(4);
+        let path = '/api' + url.substring(4);
         routerGloab.get(path, controller[url]);
         logTable.push({ type: 'GET', url: path });
       } else if (url.startsWith('POST ')) {
@@ -41,7 +41,7 @@ function mapRouter(routerGloab, controller) {
   }
 }
 
-module.exports = function() {
+module.exports = function () {
   let routerGloab = require('koa-router')();
   init(routerGloab);
   return routerGloab.routes();

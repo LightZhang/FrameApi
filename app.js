@@ -15,9 +15,9 @@ app.use(verificationContent());
 // 注册路由
 app.use(registerRouter());
 
-app.listen(3000);
+app.listen(8360);
 
-console.log(' \n 监听：', 'http://localhost:3000');
+console.log(' \n 监听：', 'http://localhost:8360');
 
 // 同步数据库结构
-db.sync();
+// db.sync();

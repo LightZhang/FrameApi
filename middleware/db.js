@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 const uuid = require('node-uuid');
 const env = process.env.NODE_ENV || 'development';
 const config = require(path.resolve(__dirname, '../config/config.json'))[env];
-const TYPES = ['STRING', 'INTEGER', 'BIGINT', 'TEXT', 'DOUBLE', 'DATEONLY', 'BOOLEAN'];
+
 console.log('init sequelize...');
 
 function generateId() {
@@ -21,7 +21,7 @@ var sequelize = new Sequelize(config.database, config.username, config.password,
   }
 });
 
-function defineModel(name, attributes) {
+function define(name, attributes) {
   var attrs = {};
   for (let key in attributes) {
     let value = attributes[key];
@@ -35,50 +35,31 @@ function defineModel(name, attributes) {
       };
     }
   }
-  attrs.id = {
-    type: Sequelize.STRING(50),
-    primaryKey: true
-  };
-  attrs.remark = {
-    type: Sequelize.STRING(50)
-  };
-
-  attrs.sort = {
-    type: Sequelize.INTEGER()
-  };
-  attrs.createdDate = {
-    type: Sequelize.BIGINT,
-    allowNull: false
-  };
-  attrs.updatedDate = {
-    type: Sequelize.BIGINT,
-    allowNull: false
-  };
 
   return sequelize.define(name, attrs, {
-    tableName: name,
+    tableName: 'shop_' + name,
     timestamps: false,
     hooks: {
-      beforeValidate: function(obj) {
+      beforeValidate: function (obj) {
         let now = Date.now();
-        if (obj.isNewRecord) {
-          console.log('will create entity...' + obj);
-          if (!obj.id) {
-            obj.id = generateId();
-          }
-          obj.createdDate = now;
-          obj.updatedDate = now;
-        } else {
-          console.log('will update entity...');
-          obj.updatedDate = now;
-        }
+        // if (obj.isNewRecord) {
+        //   console.log('will create entity...' + obj);
+        //   if (!obj.id) {
+        //     obj.id = generateId();
+        //   }
+        //   obj.createdDate = now;
+        //   obj.updatedDate = now;
+        // } else {
+        //   console.log('will update entity...');
+        //   obj.updatedDate = now;
+        // }
       }
     }
   });
 }
 
 var exp = {
-  defineModel: defineModel,
+  define: define,
   sync: () => {
     if (process.env.NODE_ENV !== 'production') {
       sequelize.sync({ force: true });
@@ -88,8 +69,5 @@ var exp = {
   }
 };
 
-for (let type of TYPES) {
-  exp[type] = Sequelize[type];
-}
 
 module.exports = exp;
