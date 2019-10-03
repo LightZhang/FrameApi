@@ -6,11 +6,10 @@ module.exports = function () {
     if (ctx.request.path.startsWith(pathPrefix)) {
       console.log(`Process API ${ctx.request.method} ${ctx.request.url}...`);
 
-      // 未定义 则为空对象
-      ctx.body = ctx.body || ctx.query || {}
 
       ctx.get = (id) => {
-        return ctx.body[id]
+        let obj = Object.assign({}, ctx.request.query, ctx.request.body)
+        return obj[id]
       }
 
 
@@ -31,7 +30,7 @@ module.exports = function () {
       };
 
       // 失败请求
-      ctx.fali = data => {
+      ctx.fail = data => {
         ctx.json(data, -1, '请求失败！');
       };
 

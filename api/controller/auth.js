@@ -1,9 +1,14 @@
 const rp = require('request-promise');
+const config = require("../../config/config.json")
+const token = require('../service/token');
+const weixin = require('../service/weixin');
+const { user } = require('../base/baseModel');
+
 
 module.exports = {
-    async loginByWeixinAction() {
-        const code = this.post('code');
-        const fullUserInfo = this.post('userInfo');
+    'POST /auth/loginByWeixin': async (ctx, next) => {
+        const code = ctx.get('code');
+        const fullUserInfo = ctx.get('userInfo');
         const userInfo = fullUserInfo.userInfo;
         const clientIp = ''; // 暂时不记录 ip
 
@@ -14,37 +19,36 @@ module.exports = {
             qs: {
                 grant_type: 'authorization_code',
                 js_code: code,
-                secret: think.config('weixin.secret'),
-                appid: think.config('weixin.appid')
+                secret: config.wechat.secret,
+                appid: config.wechat.appid
             }
         };
 
         let sessionData = await rp(options);
         sessionData = JSON.parse(sessionData);
         if (!sessionData.openid) {
-            return this.fail('登录失败');
+            return ctx.fail('登录失败');
         }
 
         // 验证用户信息完整性
         const crypto = require('crypto');
         const sha1 = crypto.createHash('sha1').update(fullUserInfo.rawData + sessionData.session_key).digest('hex');
         if (fullUserInfo.signature !== sha1) {
-            return this.fail('登录失败');
+            return ctx.fail('登录失败');
         }
 
         // 解释用户数据
-        const WeixinSerivce = this.service('weixin', 'api');
-        const weixinUserInfo = await WeixinSerivce.decryptUserInfoData(sessionData.session_key, fullUserInfo.encryptedData, fullUserInfo.iv);
-        if (think.isEmpty(weixinUserInfo)) {
-            return this.fail('登录失败');
+        const weixinUserInfo = await weixin.decryptUserInfoData(sessionData.session_key, fullUserInfo.encryptedData, fullUserInfo.iv);
+        if (!weixinUserInfo) {
+            return ctx.fail('登录失败');
         }
 
         // 根据openid查找用户是否已经注册
-        let userId = await this.model('user').where({ weixin_openid: sessionData.openid }).getField('id', true);
-        if (think.isEmpty(userId)) {
+        let curUser = await user.findOne({ where: { weixin_openid: sessionData.openid } });
+        if (!curUser) {
             // 注册
-            userId = await this.model('user').add({
-                username: '微信用户' + think.uuid(6),
+            curUser = await user.create({
+                username: '微信用户',
                 password: sessionData.openid,
                 register_time: parseInt(new Date().getTime() / 1000),
                 register_ip: clientIp,
@@ -58,28 +62,28 @@ module.exports = {
             });
         }
 
-        sessionData.user_id = userId;
+        sessionData.user_id = curUser.id;
 
         // 查询用户信息
-        const newUserInfo = await this.model('user').field(['id', 'username', 'nickname', 'gender', 'avatar', 'birthday']).where({ id: userId }).find();
+        const newUserInfo = await user.findOne({ where: { id: curUser.id }, attributes: ['id', 'username', 'nickname', 'gender', 'avatar', 'birthday'] });
 
         // 更新登录信息
-        userId = await this.model('user').where({ id: userId }).update({
-            last_login_time: parseInt(new Date().getTime() / 1000),
-            last_login_ip: clientIp
-        });
+        userId = await user.update(
+            {
+                last_login_time: parseInt(new Date().getTime() / 1000),
+                last_login_ip: clientIp
+            },
+            { where: { id: curUser.id } })
+        const sessionKey = await token.create(sessionData);
 
-        const TokenSerivce = this.service('token', 'api');
-        const sessionKey = await TokenSerivce.create(sessionData);
-
-        if (think.isEmpty(newUserInfo) || think.isEmpty(sessionKey)) {
-            return this.fail('登录失败');
+        if (!newUserInfo || !sessionKey) {
+            return ctx.fail('登录失败');
         }
 
-        return this.success({ token: sessionKey, userInfo: newUserInfo });
+        return ctx.success({ token: sessionKey, userInfo: newUserInfo });
     },
 
-    async logoutAction() {
-        return this.success();
+    'GET /auth/logout': async (ctx, next) => {
+        return ctx.success();
     }
 };

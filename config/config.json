@@ -6,5 +6,12 @@
     "host": "localhost",
     "port": 3306,
     "dialect": "mysql"
+  },
+  "wechat": {
+    "appid": "wx3e3a8229ae5d9b63",
+    "secret": "f7c80ef8721f624912cef12d1c2979f3",
+    "mch_id": "",
+    "partner_key": "",
+    "notify_url": ""
   }
 }

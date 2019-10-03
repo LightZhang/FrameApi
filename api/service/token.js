@@ -12,7 +12,7 @@ module.exports = {
         }
 
         const result = await this.parse();
-        if (think.isEmpty(result) || result.user_id <= 0) {
+        if (!result || result.user_id <= 0) {
             return 0;
         }
 
@@ -30,14 +30,13 @@ module.exports = {
 
         const userInfo = await this.model('user').field(['id', 'username', 'nickname', 'gender', 'avatar', 'birthday']).where({ id: userId }).find();
 
-        return think.isEmpty(userInfo) ? null : userInfo;
+        return userInfo;
     },
 
     async create(userInfo) {
         const token = jwt.sign(userInfo, secret);
         return token;
     },
-
     async parse() {
         if (think.token) {
             try {
@@ -51,7 +50,7 @@ module.exports = {
 
     async verify() {
         const result = await this.parse();
-        if (think.isEmpty(result)) {
+        if (!result) {
             return false;
         }
 

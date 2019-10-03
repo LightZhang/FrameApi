@@ -40,20 +40,20 @@ module.exports = {
      */
 
     'POST /cart/add': async (ctx, next) => {
-        const goodsId = ctx.post('goodsId');
-        const productId = ctx.post('productId');
-        const number = ctx.post('number');
+        const goodsId = ctx.get('goodsId');
+        const productId = ctx.get('productId');
+        const number = ctx.get('number');
 
         // 判断商品是否可以购买
         const goodsInfo = await goods.findOne({ where: { id: goodsId } });
-        if (goodsInfo || goodsInfo.is_delete === 1) {
-            return this.fail(400, '商品已下架');
+        if (!goodsInfo || goodsInfo.is_delete === 1) {
+            return ctx.fail(400, '商品已下架');
         }
 
         // 取得规格的信息,判断规格库存
         const productInfo = await product.findOne({ where: { goods_id: goodsId, id: productId } });
-        if (productInfo || productInfo.goods_number < number) {
-            return this.fail(400, '库存不足');
+        if (!productInfo || productInfo.goods_number < number) {
+            return ctx.fail(400, '库存不足');
         }
 
         // 判断购物车中是否存在此规格商品
@@ -89,22 +89,14 @@ module.exports = {
                 checked: 1
             };
 
-            await cart.thenAdd(cartData, { product_id: productId });
+            await cart.create(cartData);
 
 
         } else {
             // 如果已经存在购物车中，则数量增加
             if (productInfo.goods_number < (number + cartInfo.number)) {
-                return this.fail(400, '库存不足');
+                return ctx.fail(400, '库存不足');
             }
-
-            await cart.findAll({
-                where: {
-                    goods_id: goodsId,
-                    product_id: productId,
-                    id: cartInfo.id
-                }
-            }).increment('number', number);
         }
 
         let carts = await cartService.getCart()

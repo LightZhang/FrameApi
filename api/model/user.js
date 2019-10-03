@@ -2,11 +2,6 @@
 const db = require('../../middleware/db');
 const Sequelize = require('sequelize');
 module.exports = db.define('user', {
-  id: {
-    type: Sequelize.INTEGER(3).UNSIGNED,
-    allowNull: false,
-    primaryKey: true
-  },
   username: {
     type: Sequelize.STRING(60),
     allowNull: false,

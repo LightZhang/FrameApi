@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 const md5 = require('md5');
+const config = require('../../config/config.json');
+
 
 module.exports = {
     /**
@@ -28,7 +30,7 @@ module.exports = {
             return '';
         }
 
-        if (decoded.watermark.appid !== think.config('weixin.appid')) {
+        if (decoded.watermark.appid != config.wechat.appid) {
             return '';
         }
 
@@ -43,10 +45,10 @@ module.exports = {
     createUnifiedOrder(payInfo) {
         const WeiXinPay = require('weixinpay');
         const weixinpay = new WeiXinPay({
-            appid: think.config('weixin.appid'), // 微信小程序appid
+            appid: config.wechat.appid, // 微信小程序appid
             openid: payInfo.openid, // 用户openid
-            mch_id: think.config('weixin.mch_id'), // 商户帐号ID
-            partner_key: think.config('weixin.partner_key') // 秘钥
+            mch_id: config.wechat.mch_id, // 商户帐号ID
+            partner_key: config.wechat.partner_key // 秘钥
         });
         return new Promise((resolve, reject) => {
             weixinpay.createUnifiedOrder({
@@ -54,7 +56,7 @@ module.exports = {
                 out_trade_no: payInfo.out_trade_no,
                 total_fee: payInfo.total_fee,
                 spbill_create_ip: payInfo.spbill_create_ip,
-                notify_url: think.config('weixin.notify_url'),
+                notify_url: config.wechat.notify_url,
                 trade_type: 'JSAPI'
             }, (res) => {
                 if (res.return_code === 'SUCCESS' && res.result_code === 'SUCCESS') {

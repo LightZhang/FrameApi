@@ -27,7 +27,7 @@ function mapRouter(routerGloab, controller) {
         routerGloab.get(path, controller[url]);
         logTable.push({ type: 'GET', url: path });
       } else if (url.startsWith('POST ')) {
-        let path = url.substring(5);
+        let path = '/api' + url.substring(5);
         routerGloab.post(path, controller[url]);
         logTable.push({ type: 'POST', url: path });
       } else {
