@@ -1,22 +1,33 @@
 const { isTokenValid } = require('../tool/common');
 
-module.exports = function() {
+module.exports = function () {
   return async (ctx, next) => {
     let pathPrefix = '/api';
     if (ctx.request.path.startsWith(pathPrefix)) {
       console.log(`Process API ${ctx.request.method} ${ctx.request.url}...`);
 
+      // 未定义 则为空对象
+      ctx.body = ctx.body || ctx.query || {}
+
+      ctx.get = (id) => {
+        return ctx.body[id]
+      }
+
+
       //返回自定义code
       ctx.json = (data, code, message) => {
         ctx.response.type = 'application/json';
-        data.code = code;
-        data.message = message;
-        ctx.response.body = data;
+        let resObj = {
+          errno: code,
+          errmsg: message,
+          data: data
+        }
+        ctx.response.body = resObj;
       };
 
       // 成功请求
       ctx.success = data => {
-        ctx.json(data, 1, '请求成功！');
+        ctx.json(data, 0, '请求成功！');
       };
 
       // 失败请求

@@ -144,3 +144,4 @@ module.exports = db.define('goods', {
     defaultValue: '0'
   }
 });
+
